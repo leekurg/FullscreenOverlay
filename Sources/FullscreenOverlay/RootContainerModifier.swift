@@ -20,6 +20,7 @@ public extension AnyTransition {
 struct RootContainerModifier: ViewModifier {
     @Environment(FullscreenOverlayPresenter.self) private var presenter
     @Environment(\.overlayTransitionAnimation) var transitionAnimation
+    @State private var orientation = DeviceOrientation()
     
     let transition: AnyTransition
 
@@ -41,8 +42,7 @@ struct RootContainerModifier: ViewModifier {
                                         }
                                     }
                                     .padding(closeButtonPadding)
-                                    //TODO: support orientation change
-//                                    .padding(.top, -(closeButtonSize + 2 * closeButtonPadding))
+                                    .padding(.top, orientation.isPortrait ? -(closeButtonSize + 2 * closeButtonPadding) : 0)
                                 }
                                 .zIndex(Double(entry.deep))
                                 .background(.ultraThinMaterial, ignoresSafeAreaEdges: .all)
@@ -53,5 +53,6 @@ struct RootContainerModifier: ViewModifier {
                     .transition(transition)
                 }
             }
+            .statusBarHidden(!presenter.stack.isEmpty)
     }
 }
